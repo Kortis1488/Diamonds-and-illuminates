@@ -86,26 +86,56 @@ void angleCounter::resetCount()
     count = 0;
 }
 
-void lines::createLines(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint)
-{  
-    float dx = rpoint.x - lpoint.x;
-    float dy = rpoint.y - lpoint.y;
-    
-    // Выбираем количество шагов в зависимости от максимального изменения
-    float steps = std::max(SDL_abs(dx), SDL_abs(dy))*2;  // Увеличил детализацию (*2)
-    
-    dx /= steps;
-    dy /= steps;
-    
-    float x = lpoint.x;
-    float y = lpoint.y;
-    
-    for (int i = 0; i <= steps; i++) {
-        lin.push_back({x, y});
-        x += dx;
-        y += dy;
+void lines::createLines(const SDL_FPoint &point1, const SDL_FPoint &point2)
+{
+    SDL_FPoint 
+        p1 = point1,
+        p2 = point2;
+    //std::cout << "START p1t: (" << p1.x << ", " << p1.y << ")  "<< "p2t: (" << p2.x << ", " << p2.y << ")";
+    p1.x = SDL_round(p1.x);
+    p1.y = SDL_round(p1.y);
+    p2.x = SDL_round(p2.x);
+    p2.y = SDL_round(p2.y);
+
+    float 
+        dx = p2.x - p1.x,
+        dy = p2.y - p1.y,
+        err = 0,
+        signY = (dy>=0 ? 1 : -1),
+        signX = (dx>=0 ? 1 : -1),
+        * mainFlowValPtr = (dx>dy ?  &p1.x :  &p1.y), // указатель на главную координату, у которой больше прирост
+        * mainSignPtr = (dx>dy ?  &signX :  &signY), // указатель на прирост главной координаты
+        df = ([&]()->float{
+            if((dx||dy)!=0)
+            {
+                return SDL_fabsf(dx) > SDL_fabsf(dy) ? SDL_fabsf(dy / dx) : SDL_fabsf(dx / dy);
+            }
+            else{
+                return 0.0f;
+            }
+        })();
+        
+
+
+    for(;;){
+        if(p1.x==p2.x && p1.y==p2.y) break;
+        err+=df;
+        if(err<0.5f) 
+        {
+            *mainFlowValPtr += *mainSignPtr;
+        }
+        else{
+            p1.x+=signX;
+            p1.y+=signY;
+            err -= 1.0f;
+        }
+        lin.push_back(p1);
+        //std::cout << "p1t: (" << p1.x << ", " << p1.y << ")  "<< "p2t: (" << p2.x << ", " << p2.y << "), err = " << err <<" " << signX <<" "<< signY<<'\n';
     }
 }
+
+
+
 
 std::vector<SDL_FPoint>* lines::getLines()
 {

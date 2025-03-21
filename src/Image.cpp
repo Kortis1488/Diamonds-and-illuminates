@@ -16,7 +16,7 @@ void image::aOT(std::vector<SDL_FPoint> *pts, float scale)
 
     outline.insert(outline.end(),angles.begin(),angles.end());
     inner.insert(inner.end(),outline.begin(),outline.end());
-    innerRegion.createInnReg(inner);
+   // innerRegion.createInnReg(inner);
     
     points.insert(points.end(),inner.begin(),inner.end());
 }

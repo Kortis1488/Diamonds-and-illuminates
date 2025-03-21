@@ -155,7 +155,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     
    
     //rtr.rotate(*trngl, baseTrngl.getCenter(),2*TORADIAN, ofstr); 
-    rtr.rotate(*trngl1, baseTrngl1.getCenter(),2*TORADIAN, ofstr); 
+    //rtr.rotate(*trngl1, baseTrngl1.getCenter(),2*TORADIAN, ofstr); 
     //rtr.rotate(*beko.getPoints(), cc, 2*TORADIAN, ofstr); 
     
     
@@ -171,41 +171,41 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
 
-//     //ромбы    
-if(siq==5){
-    u = -1;
-}
-if(siq==0){
-    u = 1;
-}
-if((SDL_GetTicks()/10)%20==0){
-    siq += u;
-}
+// //     //ромбы    
+// if(siq==5){
+//     u = -1;
+// }
+// if(siq==0){
+//     u = 1;
+// }
+// if((SDL_GetTicks()/10)%20==0){
+//     siq += u;
+// }
                     
-for(int i = 0; i<quntity; i++){
-    di.emplace_back(WW,WH,i);
-}
+// for(int i = 0; i<quntity; i++){
+//     di.emplace_back(WW,WH,i);
+// }
                         
-Uint8 rC = 0, gC = 0, bC = 0, f = 1, d = 1;
+// Uint8 rC = 0, gC = 0, bC = 0, f = 1, d = 1;
                         
                         
-for(int i = 0; i<quntity; i++){
-    rC>255 ? f = 1 : f = -1;
-    gC>50 ? d = -1 : d = -1;
-    gC<10 ? d = 1 : d = 1;
+// for(int i = 0; i<quntity; i++){
+//     rC>255 ? f = 1 : f = -1;
+//     gC>50 ? d = -1 : d = -1;
+//     gC<10 ? d = 1 : d = 1;
                             
                             
-    rC = i*10;
-    gC = i*10 + 20;
-    bC = gC + d*(SDL_GetTicks()/102*10+20);
+//     rC = i*10;
+//     gC = i*10 + 20;
+//     bC = gC + d*(SDL_GetTicks()/102*10+20);
                             
-    SDL_SetRenderDrawColor(renderer, rC , gC, bC, 100);
-    for(int j = 0; j<64; j++){
-        SDL_RenderFillRect(renderer, di[i].getQuad()+j); 
-    }
-}
+//     SDL_SetRenderDrawColor(renderer, rC , gC, bC, 100);
+//     for(int j = 0; j<64; j++){
+//         SDL_RenderFillRect(renderer, di[i].getQuad()+j); 
+//     }
+// }
                                 
-di.clear();
+// di.clear();
 
 
    
