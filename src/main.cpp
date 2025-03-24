@@ -35,9 +35,13 @@ baseTriangle baseTrngl;
 baseTriangle baseTrngl1;
 circle beko;
 
+imageDesigner trng(baseTrngl.getTrianglePointsPtr().get(),100);
+imageDesigner trng1(baseTrngl1.getTrianglePointsPtr().get(),110);
+
 std::shared_ptr<std::vector<SDL_FPoint>> trngl;
 std::shared_ptr<std::vector<SDL_FPoint>> trngl1;
 std::shared_ptr<std::vector<SDL_FPoint>> circ;
+
 
 
 
@@ -83,20 +87,20 @@ static SDL_FPoint points[NUM_POINTS];
 static float point_speeds[NUM_POINTS];
 
 void rendTri(){
+    // cc.x = 0.0f;
+    // cc.y = 0.0f;
 
-    cc.x = 0.0f;
-    cc.y = 0.0f;
-
-    beko.createCircle((double)75, 0.05f, 0.3);
+    // beko.createCircle((double)75, 0.05f, 0.3);
+    
+    
+    
+    // trngl = std::make_shared<std::vector<SDL_FPoint>>(*trng.getPoints());
     
 
-    image trng(baseTrngl.getTrianglePointsPtr().get(),100);
-    trngl = std::make_shared<std::vector<SDL_FPoint>>(*trng.getPoints());
-
-    image trng1(baseTrngl1.getTrianglePointsPtr().get(),110);
-    trng1.dif(*trng.getOutline());
     
-    trngl1 = std::make_shared<std::vector<SDL_FPoint>>(*trng1.getPoints());
+    // trng1.dif(*trng.getOutline());
+    
+    // trngl1 = std::make_shared<std::vector<SDL_FPoint>>(*trng1.getPoints());
 
     //image cir(beko.getPoints().get());
     //circ = std::make_shared<std::vector<SDL_FPoint>>(*cir.getPoints());
@@ -158,7 +162,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     //rtr.rotate(*trngl1, baseTrngl1.getCenter(),2*TORADIAN, ofstr); 
     //rtr.rotate(*beko.getPoints(), cc, 2*TORADIAN, ofstr); 
     
-    
+    trng1.rotate(TORADIAN/100);
+    trng.rotate(TORADIAN/100);
 
 
 
@@ -210,10 +215,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
    
     SDL_SetRenderDrawColor(renderer, 155, 155, 200, 100);
-    SDL_RenderPoints(renderer, trngl1->data(), trngl1->size());
+    SDL_RenderPoints(renderer, trng1.getPoints()->data(), trng1.getPoints()->size());
     
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    //SDL_RenderPoints(renderer, trngl->data(), trngl->size());
+    SDL_RenderPoints(renderer, trng.getPoints()->data(), trng.getPoints()->size());
     
 
     //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);

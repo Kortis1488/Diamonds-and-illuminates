@@ -3,12 +3,9 @@
 
 
 
-void image::aOT(std::vector<SDL_FPoint> *pts, float scale)
+void imageDesigner::aOT(std::vector<SDL_FPoint> *pts, float scale)
 {
     angles.insert(angles.end(),pts->begin(),pts->end());
-
-    // center.x = 1.0f;
-    // center.y = 1.0f;
     calculateCenter(ANGLES);
     scaler.scale(angles, scale, this->center);
     offseter.offset(angles, this->center, WW, WH); 
@@ -16,12 +13,12 @@ void image::aOT(std::vector<SDL_FPoint> *pts, float scale)
 
     outline.insert(outline.end(),angles.begin(),angles.end());
     inner.insert(inner.end(),outline.begin(),outline.end());
-   // innerRegion.createInnReg(inner);
+    innerRegion.createInnReg(inner);
     
     points.insert(points.end(),inner.begin(),inner.end());
 }
 
-void image::hMOT(std::vector<SDL_FPoint> *pts)
+void imageDesigner::hMOT(std::vector<SDL_FPoint> *pts)
 {   
     outline.insert(outline.end(),pts->begin(),pts->end());
     calculateCenter(OUTLINE);
@@ -32,7 +29,7 @@ void image::hMOT(std::vector<SDL_FPoint> *pts)
     points.insert(points.end(),inner.begin(),inner.end());
 }
 
-void image::calculateCenter(mode m)
+void imageDesigner:: calculateCenter(mode m)
 {   
     std::vector<SDL_FPoint> *pts;
     m==ANGLES ? pts = &angles : pts = &outline; 
@@ -51,7 +48,7 @@ void image::calculateCenter(mode m)
     this->center.y = y/pts->size();
 }
 
-void image::creatOutline()
+void imageDesigner::creatOutline()
 {
     sort(angles.begin(), angles.end(), comparePoints);
     for(size_t i = 0; i<angles.size()-1; i++){
@@ -61,29 +58,35 @@ void image::creatOutline()
     outline.insert(outline.end(),lin.getLines()->begin(),lin.getLines()->end());
 }
 
-bool image::comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint)
+bool imageDesigner::comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint)
 {
     if (lpoint.y < rpoint.y) return true;
     if (lpoint.y > rpoint.y) return false;
     return lpoint.x < rpoint.x;
 }
 
-image::image(std::vector<SDL_FPoint> *points, float scale)
+imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points, float scale)
 {
     aOT(points, scale);
 }
 
-image::image(std::vector<SDL_FPoint> *points)
+imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points)
 {
     hMOT(points);
 }
 
-std::vector<SDL_FPoint> *image::getPoints()
+void imageDesigner::rotate(float radian)
+{   
+    calculateCenter(OUTLINE); // O(N)
+    rotator.rotate(points,center,radian,offseter);
+}
+
+std::vector<SDL_FPoint> *imageDesigner::getPoints()
 {
     return &points;
 }
 
-void image::dif(const std::vector<SDL_FPoint> &outline) {
+void imageDesigner::dif(const std::vector<SDL_FPoint> &outline) {
     std::vector<SDL_FPoint> oL(outline);  
     std::sort(oL.begin(), oL.end(), comparePoints);
     std::sort(this->inner.begin(), this->inner.end(), comparePoints);
@@ -112,11 +115,11 @@ void image::dif(const std::vector<SDL_FPoint> &outline) {
     this->points = this->inner;
 }
 
-std::vector<SDL_FPoint> *image::getOutline()
+std::vector<SDL_FPoint> *imageDesigner::getOutline()
 {
     return &outline;
 }
-image::image()
+imageDesigner::imageDesigner()
 {
 }
 

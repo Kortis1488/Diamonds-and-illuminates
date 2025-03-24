@@ -40,13 +40,15 @@ void offseter::offset(std::vector<SDL_FPoint> &fg, SDL_FPoint center, int ww, in
 
 void rotator::rotate(std::vector<SDL_FPoint> & fg, SDL_FPoint center, float turnAngle, offseter offst)
 {
-    
+    double cos = SDL_cos(turnAngle);
+    double sin = SDL_sin(turnAngle);
+
     for(int i = 0; i<fg.size(); i++){
-        float x = fg[i].x - offst.ofst.x - center.x;
-        float y = fg[i].y - offst.ofst.y - center.y;
+        float x = fg[i].x - center.x;
+        float y = fg[i].y - center.y;
         
-        fg[i].x = center.x + (x * SDL_cos(turnAngle) - y * SDL_sin(turnAngle)) + offst.ofst.x;
-        fg[i].y = center.y + (x * SDL_sin(turnAngle) + y * SDL_cos(turnAngle)) + offst.ofst.y;
+        fg[i].x =   (x * cos - y * sin) + center.x;
+        fg[i].y =   (x * sin + y * cos) + center.y;
     }
 }
 
@@ -159,12 +161,12 @@ void innerRegion::createInnReg(std::vector<SDL_FPoint> &lin)
     lines l;
     sort(lin.begin(),lin.end(),comparePoints);
     for(int i = 0; i<lin.size()-1; i++){
-        if(SDL_abs(lin.at(i).y-lin.at(i+1).y)<0.05){
-            if(SDL_abs(lin.at(i).x-lin.at(i+1).x)>0.2){
-                l.createLines(lin.at(i),lin.at(i+1));
-            }
+        if(lin[i].y==lin[i+1].y){
+            std::cout<<"-------------------------------------------\n";
+            std::cout<<"x = " << lin[i].x <<" y = " << lin[i].y<<"\nx1 = " << lin[i+1].x <<" y1 = " << lin[i+1].y<<std::endl;
+            std::cout<<"-------------------------------------------\n";
+            l.createLines(lin.at(i),lin.at(i+1));
         }
-        
     }
     std::vector<SDL_FPoint> * l1 = l.getLines();
     lin.insert(lin.end(),l1->begin(),l1->end());
