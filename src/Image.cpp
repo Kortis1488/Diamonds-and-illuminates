@@ -51,11 +51,14 @@ void imageDesigner:: calculateCenter(mode m)
 void imageDesigner::creatOutline()
 {
     sort(angles.begin(), angles.end(), comparePoints);
+    
     for(size_t i = 0; i<angles.size()-1; i++){
         lin.createLines(angles[i],angles[i+1]);
     }
     lin.createLines(angles[0],angles[angles.size()-1]);
+
     outline.insert(outline.end(),lin.getLines()->begin(),lin.getLines()->end());
+    lin.clear();
 }
 
 bool imageDesigner::comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint)
@@ -65,20 +68,29 @@ bool imageDesigner::comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rp
     return lpoint.x < rpoint.x;
 }
 
-imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points, float scale)
-{
-    aOT(points, scale);
-}
-
-imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points)
-{
-    hMOT(points);
-}
 
 void imageDesigner::rotate(float radian)
 {   
-    calculateCenter(OUTLINE); // O(N)
-    rotator.rotate(points,center,radian,offseter);
+    outline.clear();
+    inner.clear();
+    points.clear();
+
+    calculateCenter(ANGLES); // O(N)
+    rotator.rotate(angles,center,radian,offseter);
+    creatOutline();
+    
+    outline.insert(outline.end(),angles.begin(),angles.end());
+    inner.insert(inner.end(),outline.begin(),outline.end());
+    innerRegion.createInnReg(inner);
+    points.insert(points.end(),inner.begin(),inner.end());
+    // std::cout<<lin.getLines()->size()<<" lin\n";
+    // std::cout<<outline.size()<<" outline\n";
+    // std::cout<<angles.size()<<" angles\n";
+    // std::cout<<inner.size()<<" inner\n";
+    
+    // std::cout<<points.size()<<" points\n";
+
+
 }
 
 std::vector<SDL_FPoint> *imageDesigner::getPoints()
@@ -104,9 +116,9 @@ void imageDesigner::dif(const std::vector<SDL_FPoint> &outline) {
                 lX = oL[i].x; 
                 rX = oL[i+1].x;
 
-                if (SDL_abs(lY - rY) > EPSILON) continue; // Пропускаем, если не горизонталь
+                if (SDL_abs(lY - rY) > EPSILON) continue; 
                 if (SDL_abs(point.y - lY) < EPSILON && point.x >= lX && point.x <= rX) {
-                    return true; // Удаляем точку
+                    return true; 
                 }
             }
             return false;
@@ -123,6 +135,15 @@ imageDesigner::imageDesigner()
 {
 }
 
+imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points, float scale)
+{
+    aOT(points, scale);
+}
+
+imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points)
+{
+    hMOT(points);
+}
 
 
 

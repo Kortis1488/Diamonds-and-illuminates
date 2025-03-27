@@ -89,52 +89,50 @@ void angleCounter::resetCount()
 }
 
 void lines::createLines(const SDL_FPoint &point1, const SDL_FPoint &point2)
-{
+{  
     SDL_FPoint 
-        p1 = point1,
+        p1 = point1, 
         p2 = point2;
-    //std::cout << "START p1t: (" << p1.x << ", " << p1.y << ")  "<< "p2t: (" << p2.x << ", " << p2.y << ")";
+
     p1.x = SDL_round(p1.x);
     p1.y = SDL_round(p1.y);
     p2.x = SDL_round(p2.x);
     p2.y = SDL_round(p2.y);
 
     float 
-        dx = p2.x - p1.x,
-        dy = p2.y - p1.y,
+        dx = p2.x - p1.x, 
+        dy = p2.y - p1.y;
+    bool isXMajor = SDL_fabsf(dx) > SDL_fabsf(dy);
+    
+    if (dx == 0 && dy == 0) return;
+    
+    float 
         err = 0,
-        signY = (dy>=0 ? 1 : -1),
-        signX = (dx>=0 ? 1 : -1),
-        * mainFlowValPtr = (dx>dy ?  &p1.x :  &p1.y), // указатель на главную координату, у которой больше прирост
-        * mainSignPtr = (dx>dy ?  &signX :  &signY), // указатель на прирост главной координаты
-        df = ([&]()->float{
-            if((dx||dy)!=0)
-            {
-                return SDL_fabsf(dx) > SDL_fabsf(dy) ? SDL_fabsf(dy / dx) : SDL_fabsf(dx / dy);
-            }
-            else{
-                return 0.0f;
-            }
-        })();
-        
-
-
-    for(;;){
-        if(p1.x==p2.x && p1.y==p2.y) break;
-        err+=df;
-        if(err<0.5f) 
+        signX = (dx >= 0) ? 1.0f : -1.0f,
+        signY = (dy >= 0) ? 1.0f : -1.0f,
+        df = isXMajor ? SDL_fabsf(dy / dx) : SDL_fabsf(dx / dy),
+        *mainFlowValPtr = isXMajor ? &p1.x : &p1.y,
+        *mainSignPtr = isXMajor ? &signX : &signY;
+    
+    
+    
+    while (!(p1.x == p2.x && p1.y == p2.y))
+    {
+        lin.push_back(p1);
+        err += df;
+        if (err >= 0.5f) 
+        {
+            err -= 1.0f;
+            p1.x += signX;
+            p1.y += signY;
+        }
+        else
         {
             *mainFlowValPtr += *mainSignPtr;
         }
-        else{
-            p1.x+=signX;
-            p1.y+=signY;
-            err -= 1.0f;
-        }
-        lin.push_back(p1);
-        //std::cout << "p1t: (" << p1.x << ", " << p1.y << ")  "<< "p2t: (" << p2.x << ", " << p2.y << "), err = " << err <<" " << signX <<" "<< signY<<'\n';
     }
 }
+
 
 
 
@@ -162,14 +160,11 @@ void innerRegion::createInnReg(std::vector<SDL_FPoint> &lin)
     sort(lin.begin(),lin.end(),comparePoints);
     for(int i = 0; i<lin.size()-1; i++){
         if(lin[i].y==lin[i+1].y){
-            std::cout<<"-------------------------------------------\n";
-            std::cout<<"x = " << lin[i].x <<" y = " << lin[i].y<<"\nx1 = " << lin[i+1].x <<" y1 = " << lin[i+1].y<<std::endl;
-            std::cout<<"-------------------------------------------\n";
             l.createLines(lin.at(i),lin.at(i+1));
         }
     }
-    std::vector<SDL_FPoint> * l1 = l.getLines();
-    lin.insert(lin.end(),l1->begin(),l1->end());
+    
+    lin.insert(lin.end(),l.getLines()->begin(),l.getLines()->end());
 }
 
 
