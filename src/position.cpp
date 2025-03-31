@@ -198,3 +198,63 @@ void overlayer::overlay(std::vector<SDL_FPoint> *lpoints, std::vector<SDL_FPoint
         }
     }
 }
+
+void circleCreater::createCircle(float centerX, float centerY, int radius) {
+    SDL_FPoint cen = {centerX,centerY};
+    int 
+        Dg,
+        Dd,
+        Dv,
+        y = radius,
+        x = 0,
+        r = radius;
+
+    auto calcDd = [&](){
+        Dd = SDL_pow((x+1),2)+SDL_pow((y-1),2) - SDL_pow(r,2);
+    };
+    auto calcDg = [&](){
+        Dg = SDL_pow((x+1),2)+SDL_pow(y,2) - SDL_pow(r,2);
+    };
+    auto calcDv = [&](){
+        Dv = SDL_pow(x,2)+SDL_pow((y-1),2) - SDL_pow(r,2);
+    };
+    auto dig = [&](){
+        x++;
+        y--;
+    };
+
+    auto addPoint = [&](){
+        circle.push_back({ centerX + x, centerY + y });
+        circle.push_back({ centerX - x, centerY + y });
+        circle.push_back({ centerX + x, centerY - y });
+        circle.push_back({ centerX - x, centerY - y });
+        circle.push_back({ centerX + y, centerY + x });
+        circle.push_back({ centerX - y, centerY + x });
+        circle.push_back({ centerX + y, centerY - x });
+        circle.push_back({ centerX - y, centerY - x });
+    };
+
+    
+    while(x<radius){
+        addPoint();
+        calcDd();
+
+        if(Dd<0){
+            calcDg();
+            if(SDL_abs(Dg)-SDL_abs(Dd)<=0) x++;
+            else dig();
+        }
+        else if (Dd>0)
+        {
+            calcDv();
+            if(SDL_abs(Dd)-SDL_abs(Dv)>0) y--;
+            else dig();
+        }
+        else dig();
+    }
+}
+
+std::vector<SDL_FPoint> *circleCreater::getCircle()
+{
+    return &circle;
+}

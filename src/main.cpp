@@ -51,8 +51,8 @@ std::shared_ptr<std::vector<SDL_FPoint>> circ;
 scaler sclr;
 offseter ofstr;
 
+circleCreater cirCreater;
 
-circle eyeApple;
 offseter ofstrCirc;
 
 lines l;
@@ -91,7 +91,9 @@ static float point_speeds[NUM_POINTS];
 
 void rendTri(){
     
-
+    cirCreater.createCircle(200,500,100);
+    innerRegion in;
+    in.createInnReg(*cirCreater.getCircle());
     // cc.x = 0.0f;
     // cc.y = 0.0f;
 
@@ -181,49 +183,50 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
 //     //ромбы    
-if(siq==5){
-    u = -1;
-}
-if(siq==0){
-    u = 1;
-}
-if((SDL_GetTicks()/10)%20==0){
-    siq += u;
-}
+// if(siq==5){
+//     u = -1;
+// }
+// if(siq==0){
+//     u = 1;
+// }
+// if((SDL_GetTicks()/10)%20==0){
+//     siq += u;
+// }
                     
-for(int i = 0; i<quntity; i++){
-    di.emplace_back(WW,WH,i);
-}
+// for(int i = 0; i<quntity; i++){
+//     di.emplace_back(WW,WH,i);
+// }
                         
-Uint8 rC = 0, gC = 0, bC = 0, f = 1, d = 1;
+// Uint8 rC = 0, gC = 0, bC = 0, f = 1, d = 1;
                         
                         
-for(int i = 0; i<quntity; i++){
-    rC>255 ? f = 1 : f = -1;
-    gC>50 ? d = -1 : d = -1;
-    gC<10 ? d = 1 : d = 1;
+// for(int i = 0; i<quntity; i++){
+//     rC>255 ? f = 1 : f = -1;
+//     gC>50 ? d = -1 : d = -1;
+//     gC<10 ? d = 1 : d = 1;
                             
                             
-    rC = i*10;
-    gC = i*10 + 20;
-    bC = gC + d*(SDL_GetTicks()/102*10+20);
+//     rC = i*10;
+//     gC = i*10 + 20;
+//     bC = gC + d*(SDL_GetTicks()/102*10+20);
                             
-    SDL_SetRenderDrawColor(renderer, rC , gC, bC, 100);
-    for(int j = 0; j<64; j++){
-        SDL_RenderFillRect(renderer, di[i].getQuad()+j); 
-    }
-}
+//     SDL_SetRenderDrawColor(renderer, rC , gC, bC, 100);
+//     for(int j = 0; j<64; j++){
+//         SDL_RenderFillRect(renderer, di[i].getQuad()+j); 
+//     }
+// }
                                 
-di.clear();
+// di.clear();
 
 
    
     SDL_SetRenderDrawColor(renderer, 155, 155, 200, 100);
-    SDL_RenderPoints(renderer, trng1.getPoints()->data(), trng1.getPoints()->size());
+    //SDL_RenderPoints(renderer, trng1.getPoints()->data(), trng1.getPoints()->size());
     
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    SDL_RenderPoints(renderer, trng.getPoints()->data(), trng.getPoints()->size());
+    //SDL_RenderPoints(renderer, trng.getPoints()->data(), trng.getPoints()->size());
     
+    SDL_RenderPoints(renderer, cirCreater.getCircle()->data(), cirCreater.getCircle()->size());
 
     //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
     //SDL_RenderPoints(renderer, circ->data(), circ->size());
@@ -241,59 +244,4 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 }
 
                             
-                            
-// rCir = 25;
-// x = -rCir;
-
-// while(x<=rCir){
-//     circle.emplace_back();
-//     x += 0.001;
-//     circle.back().x = x;
-//     circle.back().y = SDL_sqrt(SDL_pow(rCir,2)-SDL_pow(x,2));
-//     circle.back().x += offX;
-//     circle.back().y += offY;
-    
-//     circle.emplace_back();
-//     x += 0.001;
-//     circle.back().x = x;
-//     circle.back().y = -SDL_sqrt(SDL_pow(rCir,2)-SDL_pow(x,2));
-//     circle.back().x += offX;
-//     circle.back().y += offY;
-// }
-
-// rCir = 15;
-// x = -rCir;
-
-// while(x<=rCir){
-//     circle.emplace_back();
-//     x += 0.001;
-//     circle.back().x = x;
-//     circle.back().y = SDL_sqrt(SDL_pow(rCir,2)-SDL_pow(x,2));
-//     circle.back().x += offX;
-//     circle.back().y += offY;
-    
-//     circle.emplace_back();
-//     x += 0.001;
-//     circle.back().x = x;
-//     circle.back().y = -SDL_sqrt(SDL_pow(rCir,2)-SDL_pow(x,2));
-//     circle.back().x += offX;
-//     circle.back().y += offY;
-// }
-// rCir = 5;
-// x = -rCir;
-
-// while(x<=rCir){
-//     circle.emplace_back();
-//     x += 0.001;
-//     circle.back().x = x;
-//     circle.back().y = SDL_sqrt(SDL_pow(rCir,2)-SDL_pow(x,2));
-//     circle.back().x += offX+15;
-//     circle.back().y += offY-12;
-    
-//     circle.emplace_back();
-//     x += 0.001;
-//     circle.back().x = x;
-//     circle.back().y = -SDL_sqrt(SDL_pow(rCir,2)-SDL_pow(x,2));
-//     circle.back().x += offX+15;
-//     circle.back().y += offY-12;
-// }
+            

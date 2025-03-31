@@ -86,7 +86,7 @@ void imageDesigner::rotate(float radian)
     // std::cout<<lin.getLines()->size()<<" lin\n";
     // std::cout<<outline.size()<<" outline\n";
     // std::cout<<angles.size()<<" angles\n";
-    // std::cout<<inner.size()<<" inner\n";
+    // std::cout<<inner.size()<<" inner\n"; 
     
     // std::cout<<points.size()<<" points\n";
 

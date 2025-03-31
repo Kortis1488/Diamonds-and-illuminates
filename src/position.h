@@ -69,3 +69,10 @@ class overlayer{
         static bool comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint);
         static void overlay(std::vector<SDL_FPoint> * lpoints, std::vector<SDL_FPoint> * rpoints);
 };
+
+class circleCreater{
+    std::vector<SDL_FPoint> circle;
+    public:
+        void createCircle(float centerX, float centerY, int radius);
+        std::vector<SDL_FPoint>* getCircle();
+};
