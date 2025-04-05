@@ -33,35 +33,21 @@ std::vector<dimond> di;
 //(обводка) базовый треугольник
 baseTriangle baseTrngl;
 baseTriangle baseTrngl1;
-circle beko;
 
-std::vector<SDL_FPoint> linia;
-
-imageDesigner trng(baseTrngl.getTrianglePointsPtr().get(),115);
-imageDesigner trng1(baseTrngl1.getTrianglePointsPtr().get(),130);
+std::vector<imageDesigner> objects;
 
 
 std::shared_ptr<std::vector<SDL_FPoint>> trngl;
 std::shared_ptr<std::vector<SDL_FPoint>> trngl1;
-std::shared_ptr<std::vector<SDL_FPoint>> circ;
 
 
 
 
-scaler sclr;
-offseter ofstr;
 
-circleCreater cirCreater;
+circleCreator cirCreater;
+curveCreator curvCret;
+curveCreator curvCret1;
 
-offseter ofstrCirc;
-
-lines l;
-lines l1;
-innerRegion innReg;
-
-rotator rtr;
-
-SDL_FPoint cc;
 
 
 
@@ -92,8 +78,52 @@ static float point_speeds[NUM_POINTS];
 void rendTri(){
     
     cirCreater.createCircle(200,500,100);
+ 
+    
     innerRegion in;
     in.createInnReg(*cirCreater.getCircle());
+    SDL_FPoint p0 = { 300, 300 };   // Левая точка (200 пикселей влево от центра)
+    SDL_FPoint p1 = { 400, 250 };  // Правая точка (200 пикселей вправо от центра)
+    SDL_FPoint p3 = { 400, 350 };  // Правая точка (200 пикселей вправо от центра)
+    SDL_FPoint p2 = { 500, 300 };    // Верхняя точка (150 пикселей вверх от центра)
+    
+    curvCret.createCurve(p0,p1,p2,0.1);
+    curvCret1.createCurve(p0,p3,p2,0.1);
+    
+    auto curva = *curvCret1.getCurve(); // копия вектора
+    curvCret.getCurve()->insert(curvCret.getCurve()->end(), curva.begin(), curva.end());
+    sort(curvCret.getCurve()->begin(), curvCret.getCurve()->end(), [](const SDL_FPoint &l, const SDL_FPoint &r){return l.x<r.x;});
+    
+    auto iter = curvCret.getCurve()->begin();
+    auto next = iter;
+    next++;
+
+    while(next!=curvCret.getCurve()->end()){
+        if(iter->x==next->x && iter->y==next->y ){
+            iter = curvCret.getCurve()->erase(iter);
+            next = iter;
+            next++;
+            continue;
+        }
+        ++iter;
+        ++next;
+    }
+
+    for(int i = 0; i<curvCret.getCurve()->size();i++){
+        float a = curvCret.getCurve()->at(i).x;
+        float b = curvCret.getCurve()->at(i).y;
+        std::cout<<a << " " << b << "\n";
+    }
+    std::cout<<"\n";
+
+    objects.emplace_back(baseTrngl.getTrianglePointsPtr().get(),115, true);
+    objects.emplace_back(baseTrngl1.getTrianglePointsPtr().get(),130, true);
+    objects.emplace_back(curvCret.getCurve(),0.75, false);
+
+    
+
+    //objects.emplace_back(curvCret1.getCurve());
+
     // cc.x = 0.0f;
     // cc.y = 0.0f;
 
@@ -169,8 +199,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     //rtr.rotate(*trngl1, baseTrngl1.getCenter(),2*TORADIAN, ofstr); 
     //rtr.rotate(*beko.getPoints(), cc, 2*TORADIAN, ofstr); 
     
-    trng1.rotate(TORADIAN);
-    trng.rotate(TORADIAN);
+    //trng1.rotate(TORADIAN);
+    //trng.rotate(TORADIAN);
+    //objects[0].rotate(TORADIAN/10);
+    //objects[2].rotate(TORADIAN/100);
 
 
 
@@ -182,7 +214,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
 
-//     //ромбы    
+    //ромбы    
 // if(siq==5){
 //     u = -1;
 // }
@@ -221,19 +253,29 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
    
     SDL_SetRenderDrawColor(renderer, 155, 155, 200, 100);
-    //SDL_RenderPoints(renderer, trng1.getPoints()->data(), trng1.getPoints()->size());
+    //SDL_RenderPoints(renderer, objects[1].getPoints()->data(), objects[1].getPoints()->size());
     
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    //SDL_RenderPoints(renderer, trng.getPoints()->data(), trng.getPoints()->size());
+    SDL_RenderPoints(renderer, objects[0].getPoints()->data(), objects[0].getPoints()->size());
     
-    SDL_RenderPoints(renderer, cirCreater.getCircle()->data(), cirCreater.getCircle()->size());
+    SDL_SetRenderDrawColor(renderer, 255, 100, 255, 100);
+    SDL_RenderPoints(renderer, objects[2].getPoints()->data(), objects[2].getPoints()->size());
 
+    //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+//    SDL_RenderPoints(renderer, objects[3].getPoints()->data(), objects[3].getPoints()->size());
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+    //SDL_RenderPoints(renderer, objects[3].getPoints()->data(), objects[3].getPoints()->size());
+    //SDL_RenderPoints(renderer, curvCret1.getCurve()->data(), curvCret1.getCurve()->size());
+    //SDL_RenderPoints(renderer, cirCreater.getCircle()->data(), cirCreater.getCircle()->size());
+    //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+    //SDL_RenderPoints(renderer, elpc.getEllipse()->data(), elpc.getEllipse()->size());
     //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
     //SDL_RenderPoints(renderer, circ->data(), circ->size());
     
     
     SDL_RenderPresent(renderer);
-    
+    //return SDL_APP_FAILURE;
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
                             

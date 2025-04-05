@@ -3,17 +3,17 @@
 
 
 
-void imageDesigner::aOT(std::vector<SDL_FPoint> *pts, float scale)
-{
+void imageDesigner::aOT(std::vector<SDL_FPoint> *pts, float scale, bool lnn)
+{   
     angles.insert(angles.end(),pts->begin(),pts->end());
     calculateCenter(ANGLES);
-    scaler.scale(angles, scale, this->center);
+    if(scale!=1) scaler.scale(angles, scale, this->center);
     offseter.offset(angles, this->center, WW, WH); 
-    creatOutline();
+    lnn?creatOutline():creatOutlineNonLinear();
 
     outline.insert(outline.end(),angles.begin(),angles.end());
     inner.insert(inner.end(),outline.begin(),outline.end());
-    innerRegion.createInnReg(inner);
+    //innerRegion.createInnReg(inner);
     
     points.insert(points.end(),inner.begin(),inner.end());
 }
@@ -22,9 +22,9 @@ void imageDesigner::hMOT(std::vector<SDL_FPoint> *pts)
 {   
     outline.insert(outline.end(),pts->begin(),pts->end());
     calculateCenter(OUTLINE);
-    offseter.offset(outline, this->center, WW, WH); 
+    //offseter.offset(outline, this->center, WW, WH); 
     inner.insert(inner.end(),outline.begin(),outline.end());
-    innerRegion.createInnReg(inner);
+    //innerRegion.createInnReg(inner);
 
     points.insert(points.end(),inner.begin(),inner.end());
 }
@@ -48,10 +48,11 @@ void imageDesigner:: calculateCenter(mode m)
     this->center.y = y/pts->size();
 }
 
+
+
 void imageDesigner::creatOutline()
 {
     sort(angles.begin(), angles.end(), comparePoints);
-    
     for(size_t i = 0; i<angles.size()-1; i++){
         lin.createLines(angles[i],angles[i+1]);
     }
@@ -60,28 +61,84 @@ void imageDesigner::creatOutline()
     outline.insert(outline.end(),lin.getLines()->begin(),lin.getLines()->end());
     lin.clear();
 }
+void imageDesigner::sortAngles()
+{
+    float left;
+    auto sortX = [](const SDL_FPoint &lpoint, const SDL_FPoint &rpoint){return lpoint.x < rpoint.x;};
+    // auto sortY = [](const SDL_FPoint &lpoint, const SDL_FPoint &rpoint){return lpoint.y < rpoint.y;};
+    // auto findLeft = [&left](const SDL_FPoint &lpoint){return lpoint.x == left;};
+    sort(angles.begin(), angles.end(), sortX);
+
+
+    auto sortRV = [](const SDL_FPoint &lpoint, const SDL_FPoint &rpoint){
+        if(lpoint.x<rpoint.x && lpoint.y < rpoint.y) return true;
+    };
+    
+    sort(angles.begin(), angles.end(), sortRV);
+
+    // sort(angles.begin(), angles.end(), sortX);
+    // left = angles[0].x;
+    // sort(angles.begin(), angles.end(), sortY);
+    // auto iterL = find_if(angles.begin(), angles.end(),findLeft);
+    // iterL++;
+    // sort(angles.begin(), iterL, sortX);
+    // sort(iterL+1, angles.end(), sortX);
+
+    
+    // std::cout<<"\n\n";
+    // for(int i = 0; i<angles.size(); i++){
+    //     std::cout<<angles[i].x<<" "<<angles[i].y<<"\n";
+    // }
+    // std::cout<<"\n\n";
+}
+
+
+void imageDesigner::creatOutlineNonLinear()
+{
+    sortAngles();
+    auto iter = angles.begin();
+    auto next = iter+1;
+    auto end = angles.end();
+    auto grid = next;
+    while(iter->x < next->x){
+        lin.createLines(*iter,*next);
+        iter = next++;
+    }
+    grid = next;
+    iter = next++;
+    while(next != end){
+        lin.createLines(*iter,*next);
+        iter = next++;
+    }
+    lin.createLines(*angles.begin(),*grid);
+    grid--;
+    lin.createLines(*(angles.end()-1),*grid);
+    outline.insert(outline.end(),lin.getLines()->begin(),lin.getLines()->end());
+    lin.clear();
+}
 
 bool imageDesigner::comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint)
 {
-    if (lpoint.y < rpoint.y) return true;
-    if (lpoint.y > rpoint.y) return false;
-    return lpoint.x < rpoint.x;
+    if (lpoint.x < rpoint.x) return true;
+    if (lpoint.x > rpoint.x) return false;
+    return lpoint.y < rpoint.y;
 }
 
 
 void imageDesigner::rotate(float radian)
 {   
-    outline.clear();
+    //outline.clear();
     inner.clear();
     points.clear();
 
-    calculateCenter(ANGLES); // O(N)
-    rotator.rotate(angles,center,radian,offseter);
-    creatOutline();
+    calculateCenter(ANGLES); 
+    rotator.rotate(outline,center,radian,offseter);
     
-    outline.insert(outline.end(),angles.begin(),angles.end());
+    //creatOutline();
+    
+    //outline.insert(outline.end(),angles.begin(),angles.end());
     inner.insert(inner.end(),outline.begin(),outline.end());
-    innerRegion.createInnReg(inner);
+    //innerRegion.createInnReg(inner);
     points.insert(points.end(),inner.begin(),inner.end());
     // std::cout<<lin.getLines()->size()<<" lin\n";
     // std::cout<<outline.size()<<" outline\n";
@@ -135,9 +192,9 @@ imageDesigner::imageDesigner()
 {
 }
 
-imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points, float scale)
+imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points, float scale, bool lnn)
 {
-    aOT(points, scale);
+    aOT(points, scale, lnn);
 }
 
 imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points)

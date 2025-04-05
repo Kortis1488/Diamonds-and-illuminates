@@ -42,7 +42,7 @@ void rotator::rotate(std::vector<SDL_FPoint> & fg, SDL_FPoint center, float turn
 {
     double cos = SDL_cos(turnAngle);
     double sin = SDL_sin(turnAngle);
-
+    std::cout<<fg.empty()<<"\n";
     for(int i = 0; i<fg.size(); i++){
         float x = fg[i].x - center.x;
         float y = fg[i].y - center.y;
@@ -199,7 +199,7 @@ void overlayer::overlay(std::vector<SDL_FPoint> *lpoints, std::vector<SDL_FPoint
     }
 }
 
-void circleCreater::createCircle(float centerX, float centerY, int radius) {
+void circleCreator::createCircle(float centerX, float centerY, int radius) {
     SDL_FPoint cen = {centerX,centerY};
     int 
         Dg,
@@ -225,13 +225,13 @@ void circleCreater::createCircle(float centerX, float centerY, int radius) {
 
     auto addPoint = [&](){
         circle.push_back({ centerX + x, centerY + y });
-        circle.push_back({ centerX - x, centerY + y });
-        circle.push_back({ centerX + x, centerY - y });
         circle.push_back({ centerX - x, centerY - y });
         circle.push_back({ centerX + y, centerY + x });
+        circle.push_back({ centerX - y, centerY - x });
+        circle.push_back({ centerX - x, centerY + y });
+        circle.push_back({ centerX + x, centerY - y });
         circle.push_back({ centerX - y, centerY + x });
         circle.push_back({ centerX + y, centerY - x });
-        circle.push_back({ centerX - y, centerY - x });
     };
 
     
@@ -241,20 +241,54 @@ void circleCreater::createCircle(float centerX, float centerY, int radius) {
 
         if(Dd<0){
             calcDg();
-            if(SDL_abs(Dg)-SDL_abs(Dd)<=0) x++;
-            else dig();
+            if(SDL_abs(Dg)-SDL_abs(Dd)<=0) 
+            {
+                x++;
+                continue;
+            }
         }
-        else if (Dd>0)
+        if(Dd>0)
         {
             calcDv();
-            if(SDL_abs(Dd)-SDL_abs(Dv)>0) y--;
-            else dig();
+            if(SDL_abs(Dd)-SDL_abs(Dv)>0) {
+                y--;
+                continue;
+            }
         }
-        else dig();
+        dig();
     }
 }
 
-std::vector<SDL_FPoint> *circleCreater::getCircle()
+std::vector<SDL_FPoint> *circleCreator::getCircle()
 {
     return &circle;
+}
+
+void curveCreator::createCurve(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step)
+{   
+    curve.clear();
+    float  
+    t = 0.0f,
+    x,
+    y,
+    x1,
+    y1;
+    lines lin;
+    while(t<=1+step){
+        x = (1-t)*p0.x + t*p1.x;
+        y = (1-t)*p0.y + t*p1.y;
+
+        x1 = (1-t)*p1.x + t*p2.x;
+        y1 = (1-t)*p1.y + t*p2.y;
+
+        x = (1-t)*x + t*x1;
+        y = (1-t)*y + t*y1;
+        curve.push_back({x,y});
+        t += step;
+    }
+}
+
+std::vector<SDL_FPoint> *curveCreator::getCurve()
+{
+    return &curve;
 }
