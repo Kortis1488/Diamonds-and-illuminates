@@ -37,9 +37,18 @@ std::shared_ptr<std::vector<SDL_FPoint>> baseFigureCreator::getVertex()
     return std::make_shared<std::vector<SDL_FPoint>>(vertex);
 }
 
+circleCreator::circleCreator()
+{
+    createCircle(0, 0, 100);
+}
 
+circleCreator::circleCreator(float centerX, float centerY, int radius)
+{
+    createCircle(centerX, centerY, radius);
+}
 
-void circleCreator::createCircle(float centerX, float centerY, int radius) {
+void circleCreator::createCircle(float centerX, float centerY, int radius)
+{
     SDL_FPoint cen = {centerX,centerY};
     int 
         Dg,

@@ -44,11 +44,10 @@ std::shared_ptr<std::vector<SDL_FPoint>> trngl1;
 
 
 
-circleCreator cirCreater;
-circleCreator cirCreater1;
-circleCreator cirCreater2;
-circleCreator cirCreater3;
-circleCreator cirCreater4;
+circleCreator cirCreater(WW/2,WH/2,18);
+circleCreator cirCreater1(WW/2,WH/2,15);
+circleCreator cirCreater2(WW/2,WH/2,12);
+circleCreator cirCreater3(WW/2+7,WH/2-7,3);
 curveCreator curvCret;
 curveCreator curvCret1;
 curveCreator curvCret2;
@@ -83,17 +82,8 @@ static float point_speeds[NUM_POINTS];
 
 void rendTri(){
     
-    cirCreater.createCircle(WW/2,WH/2,18);
-    cirCreater1.createCircle(WW/2,WH/2,15);
-    cirCreater2.createCircle(WW/2,WH/2,12);
-    cirCreater3.createCircle(WW/2+7,WH/2-7,3);
  
-    
-    innerRegion in;
-    in.createInnReg(*cirCreater.getCircle());
-    in.createInnReg(*cirCreater1.getCircle());
-    in.createInnReg(*cirCreater2.getCircle());
-    in.createInnReg(*cirCreater3.getCircle());
+  
 
     SDL_FPoint p0 = { 300, 300 };  
     SDL_FPoint p1 = { 400, 250 };  
@@ -119,6 +109,10 @@ void rendTri(){
     objects.emplace_back(baseTrngl.getVertex().get(),115); // 0
     objects.emplace_back(curvCret.getCurve(),0.75); // 2
     objects.emplace_back(curvCret2.getCurve(),0.6); // 3
+    objects.emplace_back(cirCreater.getVertex().get()); // 4
+    objects.emplace_back(cirCreater1.getVertex().get()); // 5
+    objects.emplace_back(cirCreater2.getVertex().get()); // 6
+    objects.emplace_back(cirCreater3.getVertex().get()); // 7
 
     
 
@@ -264,16 +258,16 @@ di.clear();
     SDL_RenderPoints(renderer, objects[3].getPoints()->data(), objects[3].getPoints()->size());
     
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-    SDL_RenderPoints(renderer, cirCreater.getCircle()->data(), cirCreater.getCircle()->size());
+    SDL_RenderPoints(renderer, objects[4].getPoints()->data(), objects[4].getPoints()->size());
     
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    SDL_RenderPoints(renderer, cirCreater1.getCircle()->data(), cirCreater1.getCircle()->size());
+    SDL_RenderPoints(renderer, objects[5].getPoints()->data(), objects[5].getPoints()->size());
     
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-    SDL_RenderPoints(renderer, cirCreater2.getCircle()->data(), cirCreater2.getCircle()->size());
+    SDL_RenderPoints(renderer, objects[6].getPoints()->data(), objects[6].getPoints()->size());
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    SDL_RenderPoints(renderer, cirCreater3.getCircle()->data(), cirCreater3.getCircle()->size());
+    SDL_RenderPoints(renderer, objects[7].getPoints()->data(), objects[7].getPoints()->size());
 
     SDL_RenderPresent(renderer);
     //return SDL_APP_FAILURE;

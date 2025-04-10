@@ -21,5 +21,7 @@ class baseTriangle: public baseFigureCreator{
 
 class circleCreator: public baseFigureCreator{
     public:
+        circleCreator();
+        circleCreator(float centerX, float centerY, int radius);
         void createCircle(float centerX, float centerY, int radius);
 };

@@ -20,11 +20,8 @@ void imageDesigner::aOT(std::vector<SDL_FPoint> *pts, float scale)
 void imageDesigner::hMOT(std::vector<SDL_FPoint> *pts)
 {   
     outline.insert(outline.end(),pts->begin(),pts->end());
-    calculateCenter(OUTLINE);
-    //offseter.offset(outline, this->center, WW, WH); 
     inner.insert(inner.end(),outline.begin(),outline.end());
-    //innerRegion.createInnReg(inner);
-
+    innerRegion.createInnReg(inner);
     points.insert(points.end(),inner.begin(),inner.end());
 }
 
