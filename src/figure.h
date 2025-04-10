@@ -4,27 +4,22 @@
 #include <memory>
 #include <iostream>
 
-class baseFigure{
+class baseFigureCreator{
     protected:
-        std::vector<SDL_FPoint> peaks;
-        const Uint8 angles;
+        std::vector<SDL_FPoint> vertex;
     public:
-        baseFigure(Uint8 angles);
+        baseFigureCreator();
         virtual SDL_FPoint getCenter();
+        std::shared_ptr <std::vector<SDL_FPoint>> getVertex(); 
 };
 
 
-class baseTriangle: public baseFigure{
+class baseTriangle: public baseFigureCreator{
     public:
         baseTriangle();
-        std::shared_ptr <std::vector<SDL_FPoint>> getTrianglePointsPtr();    
     };
 
-class circle{
-    private: 
-        std::vector<SDL_FPoint> circ;
+class circleCreator: public baseFigureCreator{
     public:
-        circle();
-        void createCircle(double rCirX, double step, double multiplier);
-        std::shared_ptr <std::vector<SDL_FPoint>> getPoints();
+        void createCircle(float centerX, float centerY, int radius);
 };

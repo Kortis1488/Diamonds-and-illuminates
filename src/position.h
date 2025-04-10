@@ -65,13 +65,7 @@ class innerRegion{
 };
 
 
-class circleCreator{
-    private:
-        std::vector<SDL_FPoint> circle;
-    public:
-        void createCircle(float centerX, float centerY, int radius);
-        std::vector<SDL_FPoint>* getCircle();
-};
+
 
 
 class curveCreator{

@@ -115,8 +115,8 @@ void rendTri(){
     curvCret2.getCurve()->insert(curvCret2.getCurve()->end(), curva1.begin(), curva1.end());
 
 
-    objects.emplace_back(baseTrngl1.getTrianglePointsPtr().get(),130); // 1
-    objects.emplace_back(baseTrngl.getTrianglePointsPtr().get(),115); // 0
+    objects.emplace_back(baseTrngl1.getVertex().get(),130); // 1
+    objects.emplace_back(baseTrngl.getVertex().get(),115); // 0
     objects.emplace_back(curvCret.getCurve(),0.75); // 2
     objects.emplace_back(curvCret2.getCurve(),0.6); // 3
 
