@@ -45,14 +45,20 @@ std::shared_ptr<std::vector<SDL_FPoint>> trngl1;
 
 
 circleCreator cirCreater;
+circleCreator cirCreater1;
+circleCreator cirCreater2;
+circleCreator cirCreater3;
+circleCreator cirCreater4;
 curveCreator curvCret;
 curveCreator curvCret1;
+curveCreator curvCret2;
+curveCreator curvCret3;
 
 
 
 
 
-#define WINDOW_WIDTH 1080
+#define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
 
 #define WW WINDOW_WIDTH
@@ -77,67 +83,47 @@ static float point_speeds[NUM_POINTS];
 
 void rendTri(){
     
-    cirCreater.createCircle(200,500,100);
+    cirCreater.createCircle(WW/2,WH/2,18);
+    cirCreater1.createCircle(WW/2,WH/2,15);
+    cirCreater2.createCircle(WW/2,WH/2,12);
+    cirCreater3.createCircle(WW/2+7,WH/2-7,3);
  
     
     innerRegion in;
     in.createInnReg(*cirCreater.getCircle());
-    SDL_FPoint p0 = { 300, 300 };   // Левая точка (200 пикселей влево от центра)
-    SDL_FPoint p1 = { 400, 250 };  // Правая точка (200 пикселей вправо от центра)
-    SDL_FPoint p3 = { 400, 350 };  // Правая точка (200 пикселей вправо от центра)
-    SDL_FPoint p2 = { 500, 300 };    // Верхняя точка (150 пикселей вверх от центра)
+    in.createInnReg(*cirCreater1.getCircle());
+    in.createInnReg(*cirCreater2.getCircle());
+    in.createInnReg(*cirCreater3.getCircle());
+
+    SDL_FPoint p0 = { 300, 300 };  
+    SDL_FPoint p1 = { 400, 250 };  
+    SDL_FPoint p3 = { 400, 350 };  
+    SDL_FPoint p2 = { 500, 300 };    
     
     curvCret.createCurve(p0,p1,p2,0.1);
     curvCret1.createCurve(p0,p3,p2,0.1);
+    curvCret2.createCurve(p0,p1,p2,0.1);
+    curvCret3.createCurve(p0,p3,p2,0.1);
     
-    auto curva = *curvCret1.getCurve(); // копия вектора
+    std::vector<SDL_FPoint> curva = *curvCret1.getCurve(); 
+    std::reverse(curva.begin(),curva.end());
     curvCret.getCurve()->insert(curvCret.getCurve()->end(), curva.begin(), curva.end());
-    sort(curvCret.getCurve()->begin(), curvCret.getCurve()->end(), [](const SDL_FPoint &l, const SDL_FPoint &r){return l.x<r.x;});
-    
-    auto iter = curvCret.getCurve()->begin();
-    auto next = iter;
-    next++;
 
-    while(next!=curvCret.getCurve()->end()){
-        if(iter->x==next->x && iter->y==next->y ){
-            iter = curvCret.getCurve()->erase(iter);
-            next = iter;
-            next++;
-            continue;
-        }
-        ++iter;
-        ++next;
-    }
 
-    for(int i = 0; i<curvCret.getCurve()->size();i++){
-        float a = curvCret.getCurve()->at(i).x;
-        float b = curvCret.getCurve()->at(i).y;
-        std::cout<<a << " " << b << "\n";
-    }
-    std::cout<<"\n";
+    std::vector<SDL_FPoint> curva1 = *curvCret3.getCurve(); 
+    std::reverse(curva1.begin(),curva1.end());
+    curvCret2.getCurve()->insert(curvCret2.getCurve()->end(), curva1.begin(), curva1.end());
 
-    objects.emplace_back(baseTrngl.getTrianglePointsPtr().get(),115, true);
-    objects.emplace_back(baseTrngl1.getTrianglePointsPtr().get(),130, true);
-    objects.emplace_back(curvCret.getCurve(),0.75, false);
+
+    objects.emplace_back(baseTrngl1.getTrianglePointsPtr().get(),130); // 1
+    objects.emplace_back(baseTrngl.getTrianglePointsPtr().get(),115); // 0
+    objects.emplace_back(curvCret.getCurve(),0.75); // 2
+    objects.emplace_back(curvCret2.getCurve(),0.6); // 3
 
     
-
-    //objects.emplace_back(curvCret1.getCurve());
 
     // cc.x = 0.0f;
     // cc.y = 0.0f;
-
-    // beko.createCircle((double)75, 0.05f, 0.3);
-    
-    
-    
-    // trngl = std::make_shared<std::vector<SDL_FPoint>>(*trng.getPoints());
-    
-
-    
-    // trng1.dif(*trng.getOutline());
-    
-    // trngl1 = std::make_shared<std::vector<SDL_FPoint>>(*trng1.getPoints());
 
     //image cir(beko.getPoints().get());
     //circ = std::make_shared<std::vector<SDL_FPoint>>(*cir.getPoints());
@@ -182,27 +168,30 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 /* This function runs when a new event (mouse input, keypresses, etc) occurs. */
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 {
-    if (event->type == SDL_EVENT_QUIT) {
-        return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
+    switch (event->type)
+    {
+    case SDL_EVENT_QUIT:
+        return SDL_APP_SUCCESS; 
+        break;
+    default:
+        break;
     }
-    return SDL_APP_CONTINUE;  /* carry on with the program! */
+    return SDL_APP_CONTINUE;
 }
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {   
-    SDL_SetRenderDrawColor(renderer, 30, 20, 40, 255);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 100, 100);
     SDL_RenderClear(renderer);
     
    
-    //rtr.rotate(*trngl, baseTrngl.getCenter(),2*TORADIAN, ofstr); 
-    //rtr.rotate(*trngl1, baseTrngl1.getCenter(),2*TORADIAN, ofstr); 
-    //rtr.rotate(*beko.getPoints(), cc, 2*TORADIAN, ofstr); 
-    
-    //trng1.rotate(TORADIAN);
-    //trng.rotate(TORADIAN);
-    //objects[0].rotate(TORADIAN/10);
-    //objects[2].rotate(TORADIAN/100);
+
+    double speed = TORADIAN*0.568;
+    objects[0].rotate(speed);
+    objects[1].rotate(speed);
+    objects[2].rotate(speed);
+    objects[3].rotate(speed);
 
 
 
@@ -214,66 +203,78 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
 
-    //ромбы    
-// if(siq==5){
-//     u = -1;
-// }
-// if(siq==0){
-//     u = 1;
-// }
-// if((SDL_GetTicks()/10)%20==0){
-//     siq += u;
-// }
+//    ромбы    
+if(siq==5){
+    u = -1;
+}
+if(siq==0){
+    u = 1;
+}
+if((SDL_GetTicks()/10)%30==0){
+    siq += u;
+}
                     
-// for(int i = 0; i<quntity; i++){
-//     di.emplace_back(WW,WH,i);
-// }
+for(int i = 0; i<quntity; i++){
+    di.emplace_back(WW,WH,i);
+}
                         
-// Uint8 rC = 0, gC = 0, bC = 0, f = 1, d = 1;
-                        
-                        
-// for(int i = 0; i<quntity; i++){
-//     rC>255 ? f = 1 : f = -1;
-//     gC>50 ? d = -1 : d = -1;
-//     gC<10 ? d = 1 : d = 1;
+Uint8 rC = 0, gC = 0, bC = 0, f = 1, d = 1, t = 0;
+Uint8 rE, gE ,bE;                        
+      
+for(int i = 0; i<quntity; i++){
+    t = SDL_GetTicks()/7;
+    rC>255 ? f = 1 : f = -1;
+    gC>50 ? d = 1 : d = 1;
+    gC<10 ? d = -1 : d = -1;
                             
                             
-//     rC = i*10;
-//     gC = i*10 + 20;
-//     bC = gC + d*(SDL_GetTicks()/102*10+20);
-                            
-//     SDL_SetRenderDrawColor(renderer, rC , gC, bC, 100);
-//     for(int j = 0; j<64; j++){
-//         SDL_RenderFillRect(renderer, di[i].getQuad()+j); 
-//     }
-// }
+    rC = f*i*10;
+    gC = d*i*10 - 100;
+    bC = gC + (t);
+
+    if(bC<50) bC = 50;
+    if(bC>180) bC = 180;
+    if(gC>200) gC = 140;
+
+    if(i == 18){
+        rE = rC;
+        gE = gC;
+        bE = bC;
+    }
+    SDL_SetRenderDrawColor(renderer, rC , gC, bC, 100);
+    for(int j = 0; j<64; j++){
+        SDL_RenderFillRect(renderer, di[i].getQuad()+j); 
+    }
+}
                                 
-// di.clear();
+di.clear();
 
 
    
-    SDL_SetRenderDrawColor(renderer, 155, 155, 200, 100);
-    //SDL_RenderPoints(renderer, objects[1].getPoints()->data(), objects[1].getPoints()->size());
-    
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
     SDL_RenderPoints(renderer, objects[0].getPoints()->data(), objects[0].getPoints()->size());
     
-    SDL_SetRenderDrawColor(renderer, 255, 100, 255, 100);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+    SDL_RenderPoints(renderer, objects[1].getPoints()->data(), objects[1].getPoints()->size());
+    
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
     SDL_RenderPoints(renderer, objects[2].getPoints()->data(), objects[2].getPoints()->size());
 
-    //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-//    SDL_RenderPoints(renderer, objects[3].getPoints()->data(), objects[3].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+    SDL_RenderPoints(renderer, objects[3].getPoints()->data(), objects[3].getPoints()->size());
+    
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+    SDL_RenderPoints(renderer, cirCreater.getCircle()->data(), cirCreater.getCircle()->size());
+    
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+    SDL_RenderPoints(renderer, cirCreater1.getCircle()->data(), cirCreater1.getCircle()->size());
+    
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+    SDL_RenderPoints(renderer, cirCreater2.getCircle()->data(), cirCreater2.getCircle()->size());
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    //SDL_RenderPoints(renderer, objects[3].getPoints()->data(), objects[3].getPoints()->size());
-    //SDL_RenderPoints(renderer, curvCret1.getCurve()->data(), curvCret1.getCurve()->size());
-    //SDL_RenderPoints(renderer, cirCreater.getCircle()->data(), cirCreater.getCircle()->size());
-    //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    //SDL_RenderPoints(renderer, elpc.getEllipse()->data(), elpc.getEllipse()->size());
-    //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    //SDL_RenderPoints(renderer, circ->data(), circ->size());
-    
-    
+    SDL_RenderPoints(renderer, cirCreater3.getCircle()->data(), cirCreater3.getCircle()->size());
+
     SDL_RenderPresent(renderer);
     //return SDL_APP_FAILURE;
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -286,4 +287,11 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 }
 
                             
-            
+// rC>255 ? f = 1 : f = -1;
+// gC>50 ? d = -1 : d = -1;
+// gC<10 ? d = 1 : d = 1;
+                        
+                        
+// rC = i*10;
+// gC = i*10 + 20;
+// bC = gC + d*(SDL_GetTicks()/102*10+20);

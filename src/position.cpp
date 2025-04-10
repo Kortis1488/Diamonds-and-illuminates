@@ -37,12 +37,10 @@ void offseter::offset(std::vector<SDL_FPoint> &fg, SDL_FPoint center, int ww, in
 
 
 
-
 void rotator::rotate(std::vector<SDL_FPoint> & fg, SDL_FPoint center, float turnAngle, offseter offst)
 {
     double cos = SDL_cos(turnAngle);
     double sin = SDL_sin(turnAngle);
-    std::cout<<fg.empty()<<"\n";
     for(int i = 0; i<fg.size(); i++){
         float x = fg[i].x - center.x;
         float y = fg[i].y - center.y;
@@ -131,6 +129,7 @@ void lines::createLines(const SDL_FPoint &point1, const SDL_FPoint &point2)
             *mainFlowValPtr += *mainSignPtr;
         }
     }
+    lin.push_back(p1);
 }
 
 
@@ -158,12 +157,12 @@ void innerRegion::createInnReg(std::vector<SDL_FPoint> &lin)
 {
     lines l;
     sort(lin.begin(),lin.end(),comparePoints);
+
     for(int i = 0; i<lin.size()-1; i++){
         if(lin[i].y==lin[i+1].y){
             l.createLines(lin.at(i),lin.at(i+1));
         }
     }
-    
     lin.insert(lin.end(),l.getLines()->begin(),l.getLines()->end());
 }
 
@@ -173,31 +172,7 @@ rotator::rotator()
     
 }
 
-bool overlayer::comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint)
-{
-    if (lpoint.y < rpoint.y) return true;
-    if (lpoint.y > rpoint.y) return false;
-    return lpoint.x < rpoint.x;
-}
 
-void overlayer::overlay(std::vector<SDL_FPoint> *lpoints, std::vector<SDL_FPoint> *rpoints) // TODO переделать нахуй
-{
-    sort(lpoints->begin(), lpoints->end(), comparePoints);
-    sort(rpoints->begin(), rpoints->end(), comparePoints);
-
-    auto iter = lpoints->begin();
-
-    for (size_t i = 0; i < rpoints->size(); i++) {
-        while (iter != lpoints->end()) {
-            if (SDL_abs((rpoints->at(i).x) - (iter->x)) <= 0.1f || SDL_abs((rpoints->at(i).y) - (iter->y)) <= 0.1f) {
-                iter = lpoints->erase(iter);  // erase возвращает следующий итератор
-                break;  // Прерываем while, так как нашли нужный элемент
-            } else {
-                ++iter;
-            }
-        }
-    }
-}
 
 void circleCreator::createCircle(float centerX, float centerY, int radius) {
     SDL_FPoint cen = {centerX,centerY};

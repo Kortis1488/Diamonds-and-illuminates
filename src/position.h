@@ -64,11 +64,6 @@ class innerRegion{
         void createInnReg(std::vector<SDL_FPoint> &lin);
 };
 
-class overlayer{
-    public:
-        static bool comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint);
-        static void overlay(std::vector<SDL_FPoint> * lpoints, std::vector<SDL_FPoint> * rpoints);
-};
 
 class circleCreator{
     private:
