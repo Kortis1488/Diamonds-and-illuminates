@@ -133,9 +133,6 @@ void lines::createLines(const SDL_FPoint &point1, const SDL_FPoint &point2)
 }
 
 
-
-
-
 std::vector<SDL_FPoint>* lines::getLines()
 {
     return &lin;
@@ -170,37 +167,4 @@ void innerRegion::createInnReg(std::vector<SDL_FPoint> &lin)
 rotator::rotator()
 {
     
-}
-
-
-
-
-
-void curveCreator::createCurve(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step)
-{   
-    curve.clear();
-    float  
-    t = 0.0f,
-    x,
-    y,
-    x1,
-    y1;
-    lines lin;
-    while(t<=1+step){
-        x = (1-t)*p0.x + t*p1.x;
-        y = (1-t)*p0.y + t*p1.y;
-
-        x1 = (1-t)*p1.x + t*p2.x;
-        y1 = (1-t)*p1.y + t*p2.y;
-
-        x = (1-t)*x + t*x1;
-        y = (1-t)*y + t*y1;
-        curve.push_back({x,y});
-        t += step;
-    }
-}
-
-std::vector<SDL_FPoint> *curveCreator::getCurve()
-{
-    return &curve;
 }

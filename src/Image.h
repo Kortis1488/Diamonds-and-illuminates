@@ -25,8 +25,8 @@ class imageDesigner{
         innerRegion innerRegion;
         rotator rotator;
         
-        void aOT(std::vector<SDL_FPoint> *points, float scale);
-        void hMOT(std::vector<SDL_FPoint> *points);
+        void setImageWithAutoOutline(std::vector<SDL_FPoint> *points, float scale);
+        void setImageWithPreparedOutline(std::vector<SDL_FPoint> *points);
         void creatOutline();
 
         static bool comparePoints(const SDL_FPoint &lpoint, const SDL_FPoint &rpoint);

@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <algorithm>
 
 class baseFigureCreator{
     protected:
@@ -24,4 +25,16 @@ class circleCreator: public baseFigureCreator{
         circleCreator();
         circleCreator(float centerX, float centerY, int radius);
         void createCircle(float centerX, float centerY, int radius);
+};
+
+class curveCreator: public baseFigureCreator{
+    public:
+        curveCreator();
+        curveCreator(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step);
+        void createCurve(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step);
+};
+
+class doubleCurveCreator: public curveCreator{
+    public:
+        doubleCurveCreator(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step);
 };

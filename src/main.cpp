@@ -41,17 +41,17 @@ std::shared_ptr<std::vector<SDL_FPoint>> trngl;
 std::shared_ptr<std::vector<SDL_FPoint>> trngl1;
 
 
-
+SDL_FPoint p0 = { 300, 300 };  
+SDL_FPoint p1 = { 400, 250 };  
+SDL_FPoint p2 = { 500, 300 };  
 
 
 circleCreator cirCreater(WW/2,WH/2,18);
 circleCreator cirCreater1(WW/2,WH/2,15);
 circleCreator cirCreater2(WW/2,WH/2,12);
 circleCreator cirCreater3(WW/2+7,WH/2-7,3);
-curveCreator curvCret;
-curveCreator curvCret1;
-curveCreator curvCret2;
-curveCreator curvCret3;
+
+curveCreator curvCretExp;
 
 
 
@@ -81,46 +81,18 @@ static SDL_FPoint points[NUM_POINTS];
 static float point_speeds[NUM_POINTS];
 
 void rendTri(){
-    
- 
-  
 
-    SDL_FPoint p0 = { 300, 300 };  
-    SDL_FPoint p1 = { 400, 250 };  
-    SDL_FPoint p3 = { 400, 350 };  
-    SDL_FPoint p2 = { 500, 300 };    
-    
-    curvCret.createCurve(p0,p1,p2,0.1);
-    curvCret1.createCurve(p0,p3,p2,0.1);
-    curvCret2.createCurve(p0,p1,p2,0.1);
-    curvCret3.createCurve(p0,p3,p2,0.1);
-    
-    std::vector<SDL_FPoint> curva = *curvCret1.getCurve(); 
-    std::reverse(curva.begin(),curva.end());
-    curvCret.getCurve()->insert(curvCret.getCurve()->end(), curva.begin(), curva.end());
-
-
-    std::vector<SDL_FPoint> curva1 = *curvCret3.getCurve(); 
-    std::reverse(curva1.begin(),curva1.end());
-    curvCret2.getCurve()->insert(curvCret2.getCurve()->end(), curva1.begin(), curva1.end());
+    doubleCurveCreator expCurva(p0,p1,p2,0.1f);
 
 
     objects.emplace_back(baseTrngl1.getVertex().get(),130); // 1
     objects.emplace_back(baseTrngl.getVertex().get(),115); // 0
-    objects.emplace_back(curvCret.getCurve(),0.75); // 2
-    objects.emplace_back(curvCret2.getCurve(),0.6); // 3
+    objects.emplace_back(expCurva.getVertex().get(),0.75); // 2
+    objects.emplace_back(expCurva.getVertex().get(),0.6); // 3
     objects.emplace_back(cirCreater.getVertex().get()); // 4
     objects.emplace_back(cirCreater1.getVertex().get()); // 5
     objects.emplace_back(cirCreater2.getVertex().get()); // 6
     objects.emplace_back(cirCreater3.getVertex().get()); // 7
-
-    
-
-    // cc.x = 0.0f;
-    // cc.y = 0.0f;
-
-    //image cir(beko.getPoints().get());
-    //circ = std::make_shared<std::vector<SDL_FPoint>>(*cir.getPoints());
 
 }
 
@@ -181,7 +153,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     
    
 
-    double speed = TORADIAN*0.568;
+    float speed = TORADIAN*0.568f;
     objects[0].rotate(speed);
     objects[1].rotate(speed);
     objects[2].rotate(speed);
@@ -198,22 +170,12 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
 //    ромбы    
-if(siq==5){
-    u = -1;
-}
-if(siq==0){
-    u = 1;
-}
-if((SDL_GetTicks()/10)%30==0){
-    siq += u;
-}
                     
 for(int i = 0; i<quntity; i++){
     di.emplace_back(WW,WH,i);
 }
                         
-Uint8 rC = 0, gC = 0, bC = 0, f = 1, d = 1, t = 0;
-Uint8 rE, gE ,bE;                        
+Uint8 rC = 0, gC = 0, bC = 0, f = 1, d = 1, t = 0;                        
       
 for(int i = 0; i<quntity; i++){
     t = SDL_GetTicks()/7;
@@ -230,11 +192,6 @@ for(int i = 0; i<quntity; i++){
     if(bC>180) bC = 180;
     if(gC>200) gC = 140;
 
-    if(i == 18){
-        rE = rC;
-        gE = gC;
-        bE = bC;
-    }
     SDL_SetRenderDrawColor(renderer, rC , gC, bC, 100);
     for(int j = 0; j<64; j++){
         SDL_RenderFillRect(renderer, di[i].getQuad()+j); 

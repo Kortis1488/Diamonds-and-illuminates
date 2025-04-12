@@ -107,3 +107,49 @@ void circleCreator::createCircle(float centerX, float centerY, int radius)
         dig();
     }
 }
+
+curveCreator::curveCreator()
+{
+
+}
+
+curveCreator::curveCreator(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step)
+{
+    createCurve(p0,p1,p2,step);
+}
+
+void curveCreator::createCurve(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step)
+{   
+    vertex.clear();
+    float  
+    t = 0.0f,
+    x,
+    y,
+    x1,
+    y1;
+    while(t<=1+step){
+        x = (1-t)*p0.x + t*p1.x;
+        y = (1-t)*p0.y + t*p1.y;
+
+        x1 = (1-t)*p1.x + t*p2.x;
+        y1 = (1-t)*p1.y + t*p2.y;
+
+        x = (1-t)*x + t*x1;
+        y = (1-t)*y + t*y1;
+        vertex.push_back({x,y});
+        t += step;
+    }
+}
+
+doubleCurveCreator::doubleCurveCreator(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step)
+{
+    SDL_FPoint p3;
+    p3.x = p2.x - (p1.x - p0.x);
+    p3.y = p2.y - (p1.y - p0.y);
+    createCurve(p0,p3,p2,step);
+    std::vector<SDL_FPoint> rev = vertex;
+    std::reverse(rev.begin(),rev.end());
+    
+    createCurve(p0,p1,p2,step);
+    vertex.insert(vertex.end(),rev.begin(),rev.end());
+}

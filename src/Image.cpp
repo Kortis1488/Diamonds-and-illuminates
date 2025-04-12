@@ -3,21 +3,19 @@
 
 
 
-void imageDesigner::aOT(std::vector<SDL_FPoint> *pts, float scale)
+void imageDesigner::setImageWithAutoOutline(std::vector<SDL_FPoint> *pts, float scale)
 {   
     angles.insert(angles.end(),pts->begin(),pts->end());
     calculateCenter(ANGLES);
     if(scale!=1) scaler.scale(angles, scale, this->center);
     offseter.offset(angles, this->center, WW, WH);
-    //outline.insert(outline.end(),angles.begin(),angles.end());
     creatOutline();
     inner.insert(inner.end(),outline.begin(),outline.end());
-
     innerRegion.createInnReg(inner);
     points.insert(points.end(),inner.begin(),inner.end());
 }
 
-void imageDesigner::hMOT(std::vector<SDL_FPoint> *pts)
+void imageDesigner::setImageWithPreparedOutline(std::vector<SDL_FPoint> *pts)
 {   
     outline.insert(outline.end(),pts->begin(),pts->end());
     inner.insert(inner.end(),outline.begin(),outline.end());
@@ -87,12 +85,12 @@ void imageDesigner::rotate(float radian)
 
 imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points, float scale)
 {
-    aOT(points, scale);
+    setImageWithAutoOutline(points, scale);
 }
 
 imageDesigner::imageDesigner(std::vector<SDL_FPoint> *points)
 {
-    hMOT(points);
+    setImageWithPreparedOutline(points);
 }
 
 

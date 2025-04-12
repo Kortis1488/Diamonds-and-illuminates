@@ -68,10 +68,3 @@ class innerRegion{
 
 
 
-class curveCreator{
-    private:
-        std::vector<SDL_FPoint> curve;
-    public:
-        void createCurve(SDL_FPoint p0, SDL_FPoint p1, SDL_FPoint p2, float step);
-        std::vector<SDL_FPoint> * getCurve();
-};
