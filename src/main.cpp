@@ -23,25 +23,9 @@
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 static Uint64 last_time = 0;
-
-
 int quntity = 150;
 std::vector<dimond> di;
-
-//(обводка) базовый треугольник
-
-
-
 std::vector<imageDesigner> objects;
-
-std::vector<SDL_FPoint> line;
-
-
-
-
-
-
-
 
 
 #define WINDOW_WIDTH 1280
@@ -127,7 +111,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
 
     last_time = SDL_GetTicks();
-
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
@@ -152,31 +135,13 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_SetRenderDrawColor(renderer, 0, 0, 100, 100);
     SDL_RenderClear(renderer);
     
-    line.push_back({500,500});
-    float x;
-    for(int i=0; i<300; i++){
-        x = 500+i;
-        line.push_back({x,500.0f});
-    }
-
     float speed = TORADIAN*0.568f;
-    // objects[0].rotate(speed);
-    // objects[1].rotate(speed);
-    // objects[2].rotate(speed);
-    // objects[3].rotate(speed);
+    objects[0].rotate(speed);
+    objects[1].rotate(speed);
+    objects[2].rotate(speed);
+    objects[3].rotate(speed);
 
-
-
-
-
-
-
-
-
-
-
-//    ромбы    
-                    
+//    ромбы                        
 for(int i = 0; i<quntity; i++){
     di.emplace_back(WW,WH,i);
 }
@@ -195,7 +160,7 @@ for(int i = 0; i<quntity; i++){
     if(bC>180) bC = 180;
     if(gC>200) gC = 140;
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, bC, 100);
+    SDL_SetRenderDrawColor(renderer, rC, gC, bC, 100);
     for(int j = 0; j<64; j++){
         SDL_RenderFillRect(renderer, di[i].getQuad()+j); 
     }
@@ -204,32 +169,32 @@ for(int i = 0; i<quntity; i++){
 di.clear();
 
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    SDL_RenderPoints(renderer, line.data(), line.size());
+    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
+    // SDL_RenderPoints(renderer, line.data(), line.size());
 
-    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-    // SDL_RenderPoints(renderer, objects[0].getPoints()->data(), objects[0].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+    SDL_RenderPoints(renderer, objects[0].getPoints()->data(), objects[0].getPoints()->size());
     
-    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    // SDL_RenderPoints(renderer, objects[1].getPoints()->data(), objects[1].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
+    SDL_RenderPoints(renderer, objects[1].getPoints()->data(), objects[1].getPoints()->size());
     
-    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-    // SDL_RenderPoints(renderer, objects[2].getPoints()->data(), objects[2].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+    SDL_RenderPoints(renderer, objects[2].getPoints()->data(), objects[2].getPoints()->size());
 
-    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    // SDL_RenderPoints(renderer, objects[3].getPoints()->data(), objects[3].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
+    SDL_RenderPoints(renderer, objects[3].getPoints()->data(), objects[3].getPoints()->size());
     
-    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-    // SDL_RenderPoints(renderer, objects[4].getPoints()->data(), objects[4].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+    SDL_RenderPoints(renderer, objects[4].getPoints()->data(), objects[4].getPoints()->size());
     
-    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    // SDL_RenderPoints(renderer, objects[5].getPoints()->data(), objects[5].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
+    SDL_RenderPoints(renderer, objects[5].getPoints()->data(), objects[5].getPoints()->size());
     
-    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-    // SDL_RenderPoints(renderer, objects[6].getPoints()->data(), objects[6].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+    SDL_RenderPoints(renderer, objects[6].getPoints()->data(), objects[6].getPoints()->size());
 
-    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
-    // SDL_RenderPoints(renderer, objects[7].getPoints()->data(), objects[7].getPoints()->size());
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
+    SDL_RenderPoints(renderer, objects[7].getPoints()->data(), objects[7].getPoints()->size());
 
     SDL_RenderPresent(renderer);
     //return SDL_APP_FAILURE;
@@ -241,13 +206,3 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
     /* SDL will clean up the window/renderer for us. */
 }
-
-                            
-// rC>255 ? f = 1 : f = -1;
-// gC>50 ? d = -1 : d = -1;
-// gC<10 ? d = 1 : d = 1;
-                        
-                        
-// rC = i*10;
-// gC = i*10 + 20;
-// bC = gC + d*(SDL_GetTicks()/102*10+20);

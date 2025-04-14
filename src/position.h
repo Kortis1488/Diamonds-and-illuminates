@@ -36,19 +36,6 @@ class rotator{
     
 };
 
-class angleCounter{
-    private:
-        const double spin = 360*TORADIAN;
-        float step;
-        float count;
-    public:
-        angleCounter();
-        angleCounter(float stp);
-        float getCount();
-        void resetCount();
-        void setStep(float stp);
-};
-
 class lines{
     private:
     std::vector<SDL_FPoint> lin;

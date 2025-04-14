@@ -15,7 +15,7 @@ enum mode{
 
 class imageDesigner{
     private:
-        std::vector<SDL_FPoint> angles;
+        std::vector<SDL_FPoint> vertex;
         std::vector<SDL_FPoint> outline;
         std::vector<SDL_FPoint> inner;
 

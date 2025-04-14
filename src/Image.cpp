@@ -5,10 +5,10 @@
 
 void imageDesigner::setImageWithAutoOutline(std::vector<SDL_FPoint> *pts, float scale)
 {   
-    angles.insert(angles.end(),pts->begin(),pts->end());
+    vertex.insert(vertex.end(),pts->begin(),pts->end());
     calculateCenter(ANGLES);
-    if(scale!=1) scaler.scale(angles, scale, this->center);
-    offseter.offset(angles, this->center, WW, WH);
+    if(scale!=1) scaler.scale(vertex, scale, this->center);
+    offseter.offset(vertex, this->center, WW, WH);
     creatOutline();
     inner.insert(inner.end(),outline.begin(),outline.end());
     innerRegion.createInnReg(inner);
@@ -26,7 +26,7 @@ void imageDesigner::setImageWithPreparedOutline(std::vector<SDL_FPoint> *pts)
 void imageDesigner:: calculateCenter(mode m)
 {   
     std::vector<SDL_FPoint> *pts;
-    m==ANGLES ? pts = &angles : pts = &outline; 
+    m==ANGLES ? pts = &vertex : pts = &outline; 
 
     if (pts->empty()) {
         return;
@@ -46,10 +46,10 @@ void imageDesigner:: calculateCenter(mode m)
 void imageDesigner::creatOutline()
 {
 
-    for(size_t i = 0; i<angles.size()-1; i++){
-        lin.createLines(angles[i],angles[i+1]);
+    for(size_t i = 0; i<vertex.size()-1; i++){
+        lin.createLines(vertex[i],vertex[i+1]);
     }
-    lin.createLines(angles[0],angles[angles.size()-1]);
+    lin.createLines(vertex[0],vertex[vertex.size()-1]);
     outline.insert(outline.end(),lin.getLines()->begin(),lin.getLines()->end());
     lin.clear();
 }
@@ -70,7 +70,7 @@ void imageDesigner::rotate(float radian)
     points.clear();
 
     calculateCenter(ANGLES); 
-    rotator.rotate(angles,center,radian,offseter);
+    rotator.rotate(vertex,center,radian,offseter);
 
     creatOutline();
     
@@ -106,7 +106,7 @@ std::vector<SDL_FPoint> *imageDesigner::getOutline()
 }
 std::vector<SDL_FPoint> *imageDesigner::getAngles()
 {
-    return &angles;
+    return &vertex;
 }
 imageDesigner::imageDesigner()
 {

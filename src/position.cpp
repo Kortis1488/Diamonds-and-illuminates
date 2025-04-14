@@ -57,34 +57,6 @@ const float radCalculator::calculateRadius(SDL_FPoint &center, SDL_FPoint &point
     return SDL_sqrt(xR+yR);
 }
 
-angleCounter::angleCounter()
-{
-    this->count = 0;
-    this->step = 1;
-}
-
-angleCounter::angleCounter(float stp)
-{
-    this->step = stp;
-}
-
-void angleCounter::setStep(float stp)
-{
-    this->step = stp;
-}
-
-float angleCounter::getCount()
-{   
-    count += step*TORADIAN;
-    if(count>=spin)count -= spin; 
-    
-    return count;
-}
-
-void angleCounter::resetCount()
-{
-    count = 0;
-}
 
 void lines::createLines(const SDL_FPoint &point1, const SDL_FPoint &point2)
 {  

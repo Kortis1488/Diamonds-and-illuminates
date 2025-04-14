@@ -13,8 +13,7 @@ add_subdirectory(lib/SDL EXCLUDE_FROM_ALL)
 
 # Create your game executable target as usual
 add_executable(Water 
-                    src/main.cpp 
-                    src/quad.cpp 
+                    src/main.cpp
                     src/figure.cpp 
                     src/position.cpp
                     src/Image.cpp)
